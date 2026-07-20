@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #f7f8fa;
+  color: #222222;
+}
+
+/* 下部固定バー（FixedContactBar）の高さぶんの余白は app/(site)/layout.tsx の pb-28 で確保している */
+
+:focus-visible {
+  outline: 2px solid #087f30;
+  outline-offset: 2px;
+}
+
+/* 管理画面フォームの共通入力欄スタイル */
+@layer components {
+  .input {
+    @apply w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:border-brand-green focus:outline-none;
+  }
+}

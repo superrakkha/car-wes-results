@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 260" width="400" height="260">
+  <rect width="400" height="260" fill="#F7F8FA"/>
+  <rect x="0" y="190" width="400" height="70" fill="#E7EAEE"/>
+  <g>
+    <path d="M60 190 L85 140 Q95 128 112 128 L270 128 Q286 128 296 140 L332 190 Z" fill="#0AA33B"/>
+    <path d="M110 134 L150 134 L145 168 L100 168 Z" fill="#F7F8FA" opacity="0.85"/>
+    <path d="M158 134 L235 134 L233 168 L160 168 Z" fill="#F7F8FA" opacity="0.85"/>
+    <rect x="55" y="185" width="290" height="20" rx="6" fill="#087F30"/>
+    <circle cx="120" cy="205" r="22" fill="#222222"/>
+    <circle cx="120" cy="205" r="9" fill="#F7F8FA"/>
+    <circle cx="280" cy="205" r="22" fill="#222222"/>
+    <circle cx="280" cy="205" r="9" fill="#F7F8FA"/>
+  </g>
+  <text x="200" y="240" font-family="sans-serif" font-size="13" fill="#9AA1AA" text-anchor="middle">写真準備中</text>
+</svg>

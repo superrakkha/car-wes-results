@@ -1,0 +1,23 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+# 管理画面から追加・編集した内容を保存するJSON（初回起動時に仮データから自動生成される）
+/data/results-store.json
+tsconfig.tsbuildinfo
