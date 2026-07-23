@@ -196,7 +196,7 @@ export default function ResultForm({
           <select
             name="status"
             required
-            defaultValue={defaultValues?.status ?? "draft"}
+            defaultValue={defaultValues?.status ?? "published"}
             className="input"
           >
             <option value="draft">下書き</option>
