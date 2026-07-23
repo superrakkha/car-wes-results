@@ -10,14 +10,15 @@ export const SITE_CONFIG = {
   phoneDisplay: "0120-823-320",
   lineUrl: "https://line.me/R/ti/p/@080gspcs?ts=05122306&oat_content=url",
   nav: [
-    { label: "無料査定", href: "https://ka-wes.com" },
+    { label: "無料査定", href: "https://www.ka-wes.com/" },
     { label: "山形県買取情報", href: "https://www.ka-wes.com/yamagata" },
     {
-      label: "廃車手続き代行に必要な書類",
+      label: "廃車手続きに必要な書類",
       href: "https://www.ka-wes.com/haisya-document",
     },
+    { label: "車種別買取参考価格", href: "https://cars.ka-wes.com/" },
+    { label: "買取実績", href: "https://results.ka-wes.com/" },
     { label: "廃車買取の流れ", href: "https://www.ka-wes.com/flow-car" },
-    { label: "買取実績", href: "https://www.ka-wes.com/purchase-results" },
     { label: "お得な情報", href: "https://www.ka-wes.com/blog" },
     { label: "会社概要", href: "https://www.ka-wes.com/company" },
   ],
