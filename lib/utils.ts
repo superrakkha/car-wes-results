@@ -19,6 +19,8 @@ export function formatDateJa(dateStr: string): string {
 }
 
 // URLスラッグを自動生成する（例: toyota-prius-2012-shibata-001）
+// 日本語（カタカナ・漢字など）はURLに含めるとブラウザ・サーバー間でのエンコードの
+// 取り扱いが不安定になり、404の原因になることがあるため、英数字だけに変換する
 export function buildSlug(params: {
   makerSlug: string;
   carName: string;
@@ -28,7 +30,7 @@ export function buildSlug(params: {
 }): string {
   const carPart = params.carName
     .toLowerCase()
-    .replace(/[^a-z0-9ぁ-んァ-ヶ一-龠]+/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
   const numberPart = params.managementNumber.replace(/[^a-z0-9]/gi, "");
   return [params.makerSlug, carPart, params.year, params.areaSlug, numberPart]

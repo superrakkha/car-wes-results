@@ -53,6 +53,16 @@ export default function ResultForm({
           </Field>
         </div>
 
+        <Field label="URLスラッグ（空欄なら自動生成／半角英数字とハイフンのみ推奨）">
+          <input
+            type="text"
+            name="slugOverride"
+            defaultValue={defaultValues?.slug}
+            className="input"
+            placeholder="例：toyota-prius-2012-shibata-001（空欄でOK）"
+          />
+        </Field>
+
         <Field label="グレード（任意）">
           <input
             type="text"

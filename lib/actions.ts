@@ -105,16 +105,31 @@ async function resolveMainImageUrl(
   return current || PLACEHOLDER_IMAGE;
 }
 
+// 手入力のスラッグをURLに安全な形（半角英数字とハイフンのみ）に整える
+// 空欄、または英数字が1文字も無い場合は null を返し、自動生成に任せる
+function sanitizeSlugOverride(formData: FormData): string | null {
+  const raw = String(formData.get("slugOverride") ?? "").trim();
+  if (!raw) return null;
+
+  const cleaned = raw
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  return cleaned || null;
+}
+
 // 新規登録
 export async function createResultAction(formData: FormData) {
   const data = parseFormData(formData);
-  const slug = buildSlug({
+  const autoSlug = buildSlug({
     makerSlug: data.makerSlug,
     carName: data.carName,
     year: data.year,
     areaSlug: data.areaSlug,
     managementNumber: data.managementNumber,
   });
+  const slug = sanitizeSlugOverride(formData) ?? autoSlug;
   const mainImageUrl = await resolveMainImageUrl(
     formData,
     data.managementNumber
@@ -130,12 +145,20 @@ export async function createResultAction(formData: FormData) {
 // 編集（idを事前にbindして使う）
 export async function updateResultAction(id: string, formData: FormData) {
   const data = parseFormData(formData);
+  const autoSlug = buildSlug({
+    makerSlug: data.makerSlug,
+    carName: data.carName,
+    year: data.year,
+    areaSlug: data.areaSlug,
+    managementNumber: data.managementNumber,
+  });
+  const slug = sanitizeSlugOverride(formData) ?? autoSlug;
   const mainImageUrl = await resolveMainImageUrl(
     formData,
     data.managementNumber
   );
 
-  await updateResult(id, { ...data, mainImageUrl });
+  await updateResult(id, { ...data, slug, mainImageUrl });
 
   revalidatePath("/");
   revalidatePath("/admin/results");

@@ -11,10 +11,18 @@ if (!supabaseUrl || !supabaseAnonKey) {
   );
 }
 
+// Next.jsはfetch()の結果を勝手にキャッシュすることがあるため、
+// Supabaseへの問い合わせだけは常に最新を取りに行くよう明示的に無効化する。
+// （これが無いと、Supabaseのダッシュボードで直接データを削除・変更したときに、
+// 　サイト側に反映されないことがある）
+const noStoreFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...init, cache: "no-store" });
+
 // 公開サイト側（誰でもアクセスできる場所）で使うクライアント。
 // RLSにより status = 'published' の行しか読めない
 export const supabasePublic = createClient(supabaseUrl, supabaseAnonKey, {
   auth: { persistSession: false },
+  global: { fetch: noStoreFetch },
 });
 
 // 管理画面（サーバー側の処理でのみ使用）用クライアント。
@@ -25,5 +33,6 @@ export const supabaseAdmin = createClient(
   supabaseServiceRoleKey || supabaseAnonKey,
   {
     auth: { persistSession: false },
+    global: { fetch: noStoreFetch },
   }
 );
