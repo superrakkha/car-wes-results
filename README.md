@@ -90,8 +90,8 @@ npm run dev
 - Supabase Auth（今は簡易パスワードのみ）
 - 画像アップロードUI（実装済み。ただしWebP変換・複数枚対応・ドラッグ＆ドロップはまだ）
 - 詳細ページ `/results/[slug]`
-- メーカー別・地域別・状態別ページの自動生成
-- sitemap.xml / robots.txt などの本格的なSEO設定
+- メーカー別・地域別・状態別ページの自動生成（実装済み：`/maker/[makerSlug]`・`/area/[areaSlug]`・`/condition/[conditionSlug]`）
+- sitemap.xml / robots.txt（実装済み：`app/sitemap.ts` / `app/robots.ts`。本番ドメインが決まったら `NEXT_PUBLIC_SITE_URL` を設定してください）
 
 ## 動作確認したいポイント
 

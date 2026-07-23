@@ -7,9 +7,13 @@ import ResultCard from "./ResultCard";
 export default function ResultGrid({
   results,
   searchParams,
+  basePath = "/",
 }: {
   results: PurchaseResult[];
   searchParams: ResultsSearchParams;
+  // メーカー別・地域別・状態別ページなど、一覧ページ以外で使うときのURL基点
+  // （ページネーションのリンク先を正しくするために必要）
+  basePath?: string;
 }) {
   const filtered = filterResults(results, {
     keyword: searchParams.keyword,
@@ -52,6 +56,7 @@ export default function ResultGrid({
           currentPage={currentPage}
           totalPages={totalPages}
           searchParams={searchParams}
+          basePath={basePath}
         />
       )}
     </section>
@@ -62,10 +67,12 @@ function PaginationNav({
   currentPage,
   totalPages,
   searchParams,
+  basePath,
 }: {
   currentPage: number;
   totalPages: number;
   searchParams: ResultsSearchParams;
+  basePath: string;
 }) {
   function hrefForPage(p: number) {
     const params = new URLSearchParams();
@@ -76,7 +83,7 @@ function PaginationNav({
     if (searchParams.sort) params.set("sort", searchParams.sort);
     if (p > 1) params.set("page", String(p));
     const qs = params.toString();
-    return qs ? `/?${qs}` : "/";
+    return qs ? `${basePath}?${qs}` : basePath;
   }
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);

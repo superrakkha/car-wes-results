@@ -23,6 +23,9 @@ export const SITE_CONFIG = {
   ],
   badges: ["通話無料", "現金手渡し", "24時間対応中"],
   resultsPerPage: 24,
+  // このサイト自身の公開URL（sitemap.xml・canonicalなどに使用）
+  // Vercelでの一時的なURLで運用中の場合は、環境変数 NEXT_PUBLIC_SITE_URL を設定して上書きできる
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://results.ka-wes.com",
   // 管理画面の簡易パスワード（Supabase Auth接続までの仮のもの。必ず変更してください）
   adminPassword: "carwes2026",
 } as const;
