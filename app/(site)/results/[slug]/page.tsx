@@ -3,8 +3,10 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/Breadcrumb";
 import BuyingFlow from "@/components/BuyingFlow";
+import CarsReferenceLink from "@/components/CarsReferenceLink";
 import ResultAssessmentCTA from "@/components/ResultAssessmentCTA";
 import ResultCard from "@/components/ResultCard";
+import { findCarsReference } from "@/lib/cars";
 import { getPublishedResults, getResultBySlug } from "@/lib/store";
 import {
   formatDateJa,
@@ -62,6 +64,7 @@ export default async function ResultDetailPage({
 
   const allResults = await getPublishedResults();
   const related = getRelatedResults(result!, allResults, 4);
+  const carsReference = await findCarsReference(result!);
 
   const breadcrumbItems = [
     { label: "ホーム", href: "/" },
@@ -192,6 +195,13 @@ export default async function ResultDetailPage({
               {result!.assessmentPoint}
             </div>
           </section>
+        )}
+
+        {/* この車種の買取相場（cars.ka-wes.com）への関連情報リンク。存在確認が取れた場合のみ表示 */}
+        {carsReference && (
+          <div className="mt-6">
+            <CarsReferenceLink url={carsReference.url} carName={result!.carName} />
+          </div>
         )}
 
         {/* 買取までの流れ */}
