@@ -1,26 +1,20 @@
 import { PurchaseResult, SortKey } from "@/types";
 
-// 買取価格を「85,000円」のような表示に変換する
 export function formatPrice(price: number): string {
   return `${price.toLocaleString("ja-JP")}円`;
 }
 
-// 走行距離を「50,000km」のような表示に変換する
 export function formatMileage(mileage: number, unknown?: boolean): string {
   if (unknown) return "不明";
   return `${mileage.toLocaleString("ja-JP")}km`;
 }
 
-// 買取日を「2026年7月10日」のような表示に変換する
 export function formatDateJa(dateStr: string): string {
   const d = new Date(dateStr);
   if (Number.isNaN(d.getTime())) return dateStr;
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
 }
 
-// URLスラッグを自動生成する（例: toyota-prius-2012-shibata-001）
-// 日本語（カタカナ・漢字など）はURLに含めるとブラウザ・サーバー間でのエンコードの
-// 取り扱いが不安定になり、404の原因になることがあるため、英数字だけに変換する
 export function buildSlug(params: {
   makerSlug: string;
   carName: string;
@@ -38,7 +32,6 @@ export function buildSlug(params: {
     .join("-");
 }
 
-// 一覧を絞り込む
 export function filterResults(
   results: PurchaseResult[],
   filters: {
@@ -54,14 +47,7 @@ export function filterResults(
     const kw = filters.keyword.trim().toLowerCase();
     if (kw) {
       list = list.filter((r) =>
-        [
-          r.maker,
-          r.carName,
-          r.modelCode ?? "",
-          r.city,
-          r.prefecture,
-          r.assessmentPoint ?? "",
-        ]
+        [r.maker, r.carName, r.modelCode ?? "", r.city, r.prefecture, r.assessmentPoint ?? ""]
           .join(" ")
           .toLowerCase()
           .includes(kw)
@@ -72,11 +58,9 @@ export function filterResults(
   if (filters.condition) {
     list = list.filter((r) => r.conditionSlug === filters.condition);
   }
-
   if (filters.area) {
     list = list.filter((r) => r.areaSlug === filters.area);
   }
-
   if (filters.maker) {
     list = list.filter((r) => r.makerSlug === filters.maker);
   }
@@ -84,7 +68,6 @@ export function filterResults(
   return list;
 }
 
-// 並び替える
 export function sortResults(
   results: PurchaseResult[],
   sort: SortKey = "newest"
@@ -102,14 +85,11 @@ export function sortResults(
     case "newest":
     default:
       return list.sort(
-        (a, b) =>
-          new Date(b.purchaseDate).getTime() -
-          new Date(a.purchaseDate).getTime()
+        (a, b) => new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime()
       );
   }
 }
 
-// ページ分割する
 export function paginate<T>(
   items: T[],
   page: number,
@@ -118,14 +98,9 @@ export function paginate<T>(
   const totalPages = Math.max(1, Math.ceil(items.length / perPage));
   const currentPage = Math.min(Math.max(1, page), totalPages);
   const start = (currentPage - 1) * perPage;
-  return {
-    items: items.slice(start, start + perPage),
-    totalPages,
-    currentPage,
-  };
+  return { items: items.slice(start, start + perPage), totalPages, currentPage };
 }
 
-// 詳細ページの「関連実績」を優先順位（同じ車種 > 同じメーカー > 同じ状態 > 同じ地域）で最大4件取得する
 export function getRelatedResults(
   current: PurchaseResult,
   all: PurchaseResult[],
@@ -133,23 +108,38 @@ export function getRelatedResults(
 ): PurchaseResult[] {
   const others = all.filter((r) => r.id !== current.id);
   const picked = new Map<string, PurchaseResult>();
-
   const passes: Array<(r: PurchaseResult) => boolean> = [
     (r) => r.carName === current.carName,
     (r) => r.makerSlug === current.makerSlug,
     (r) => r.conditionSlug === current.conditionSlug,
     (r) => r.areaSlug === current.areaSlug,
   ];
-
   for (const test of passes) {
     if (picked.size >= max) break;
     for (const r of others) {
       if (picked.size >= max) break;
-      if (test(r) && !picked.has(r.id)) {
-        picked.set(r.id, r);
-      }
+      if (test(r) && !picked.has(r.id)) picked.set(r.id, r);
     }
   }
-
   return Array.from(picked.values());
+}
+
+// 買取実績→無料査定LP（haisya.ka-wes.com）への遷移URLを生成する共通関数。
+// メーカー・車種・型式だけを引き継ぎ、年式・走行距離・地域・買取価格などは引き継がない
+// （実績車両とユーザー自身の車は別物のため）。
+// utm_source/utm_medium は常に固定、utm_campaign は配置場所ごとに変える。
+export function buildAssessmentUrl(params: {
+  maker?: string;
+  model?: string;
+  type?: string;
+  utmCampaign: string;
+}): string {
+  const url = new URL("https://haisya.ka-wes.com/");
+  if (params.maker) url.searchParams.set("maker", params.maker);
+  if (params.model) url.searchParams.set("model", params.model);
+  if (params.type) url.searchParams.set("type", params.type);
+  url.searchParams.set("utm_source", "results");
+  url.searchParams.set("utm_medium", "referral");
+  url.searchParams.set("utm_campaign", params.utmCampaign);
+  return url.toString();
 }

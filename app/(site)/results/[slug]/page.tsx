@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Breadcrumb from "@/components/Breadcrumb";
 import BuyingFlow from "@/components/BuyingFlow";
-import CTASection from "@/components/CTASection";
+import ResultAssessmentCTA from "@/components/ResultAssessmentCTA";
 import ResultCard from "@/components/ResultCard";
 import { getPublishedResults, getResultBySlug } from "@/lib/store";
 import {
@@ -18,8 +17,6 @@ import {
 // このページはキャッシュせず常に最新の状態で描画する
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-
 
 export async function generateMetadata({
   params,
@@ -69,19 +66,19 @@ export default async function ResultDetailPage({
   const breadcrumbItems = [
     { label: "ホーム", href: "/" },
     { label: "買取実績", href: "/" },
-    { label: `${result.maker} ${result.carName}` },
+    { label: `${result!.maker} ${result!.carName}` },
   ];
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: `${result.maker} ${result.carName}（${result.year}年式）の買取実績`,
-    datePublished: result.purchaseDate,
-    articleBody: result.assessmentPoint || undefined,
+    headline: `${result!.maker} ${result!.carName}（${result!.year}年式）の買取実績`,
+    datePublished: result!.purchaseDate,
+    articleBody: result!.assessmentPoint || undefined,
     about: {
       "@type": "Product",
-      name: `${result.maker} ${result.carName}`,
-      vehicleModelDate: String(result.year),
+      name: `${result!.maker} ${result!.carName}`,
+      vehicleModelDate: String(result!.year),
     },
   };
 
@@ -99,24 +96,24 @@ export default async function ResultDetailPage({
         <div className="grid gap-6 sm:grid-cols-2">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-brand-bg shadow-card">
             <Image
-              src={result.mainImageUrl}
-              alt={`${result.city}で買い取った${result.year}年式${result.maker} ${result.carName}${result.condition}`}
+              src={result!.mainImageUrl}
+              alt={`${result!.city}で買い取った${result!.year}年式${result!.maker} ${result!.carName}${result!.condition}`}
               fill
               sizes="(max-width: 640px) 100vw, 50vw"
               className="object-cover"
               priority
             />
             <span className="absolute left-3 top-3 rounded-full bg-brand-green-dark px-3 py-1 text-xs font-bold text-white">
-              {result.condition}
+              {result!.condition}
             </span>
           </div>
 
           <div className="flex flex-col justify-center">
             <h1 className="text-xl font-extrabold text-brand-text sm:text-2xl">
-              {result.maker} {result.carName}
-              {result.grade && (
+              {result!.maker} {result!.carName}
+              {result!.grade && (
                 <span className="ml-1 text-base font-bold text-gray-400">
-                  {result.grade}
+                  {result!.grade}
                 </span>
               )}
             </h1>
@@ -124,23 +121,26 @@ export default async function ResultDetailPage({
             <div className="mt-4">
               <span className="text-xs text-gray-500">買取価格</span>
               <p className="text-4xl font-extrabold text-brand-red">
-                {formatPrice(result.purchasePrice)}
+                {formatPrice(result!.purchasePrice)}
               </p>
             </div>
 
             <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-600">
               <dt className="text-gray-400">買取地域</dt>
               <dd>
-                {result.prefecture}
-                {result.city}
+                {result!.prefecture}
+                {result!.city}
               </dd>
               <dt className="text-gray-400">買取日</dt>
-              <dd>{formatDateJa(result.purchaseDate)}</dd>
+              <dd>{formatDateJa(result!.purchaseDate)}</dd>
               <dt className="text-gray-400">年式</dt>
-              <dd>{result.year}年</dd>
+              <dd>{result!.year}年</dd>
               <dt className="text-gray-400">走行距離</dt>
-              <dd>{formatMileage(result.mileage, result.mileageUnknown)}</dd>
+              <dd>{formatMileage(result!.mileage, result!.mileageUnknown)}</dd>
             </dl>
+
+            {/* CTA①：買取価格のすぐ下（最重要CVポイント） */}
+            <ResultAssessmentCTA result={result!} variant="price" />
           </div>
         </div>
 
@@ -149,55 +149,50 @@ export default async function ResultDetailPage({
           <h2 className="mb-4 text-lg font-bold text-brand-text">車両情報</h2>
           <div className="overflow-hidden rounded-2xl bg-white shadow-card">
             <dl className="divide-y divide-gray-100 text-sm">
-              <InfoRow label="メーカー" value={result.maker} />
-              <InfoRow label="車種名" value={result.carName} />
-              {result.grade && <InfoRow label="グレード" value={result.grade} />}
-              {result.modelCode && (
-                <InfoRow label="型式" value={result.modelCode} />
+              <InfoRow label="メーカー" value={result!.maker} />
+              <InfoRow label="車種名" value={result!.carName} />
+              {result!.grade && <InfoRow label="グレード" value={result!.grade} />}
+              {result!.modelCode && (
+                <InfoRow label="型式" value={result!.modelCode} />
               )}
-              <InfoRow label="年式" value={`${result.year}年`} />
+              <InfoRow label="年式" value={`${result!.year}年`} />
               <InfoRow
                 label="走行距離"
-                value={formatMileage(result.mileage, result.mileageUnknown)}
+                value={formatMileage(result!.mileage, result!.mileageUnknown)}
               />
-              {result.inspectionStatus && (
-                <InfoRow label="車検の有無" value={result.inspectionStatus} />
+              {result!.inspectionStatus && (
+                <InfoRow label="車検の有無" value={result!.inspectionStatus} />
               )}
-              {result.driveType && (
-                <InfoRow label="駆動方式" value={result.driveType} />
+              {result!.driveType && (
+                <InfoRow label="駆動方式" value={result!.driveType} />
               )}
-              {result.fuelType && (
-                <InfoRow label="燃料" value={result.fuelType} />
+              {result!.fuelType && (
+                <InfoRow label="燃料" value={result!.fuelType} />
               )}
-              {result.bodyColor && (
-                <InfoRow label="車体色" value={result.bodyColor} />
+              {result!.bodyColor && (
+                <InfoRow label="車体色" value={result!.bodyColor} />
               )}
               <InfoRow
                 label="買取地域"
-                value={`${result.prefecture}${result.city}`}
+                value={`${result!.prefecture}${result!.city}`}
               />
-              <InfoRow label="買取日" value={formatDateJa(result.purchaseDate)} />
-              <InfoRow label="車両状態" value={result.condition} />
+              <InfoRow label="買取日" value={formatDateJa(result!.purchaseDate)} />
+              <InfoRow label="車両状態" value={result!.condition} />
             </dl>
           </div>
         </section>
 
         {/* 査定ポイント */}
-        {result.assessmentPoint && (
+        {result!.assessmentPoint && (
           <section className="mt-10">
             <h2 className="mb-4 text-lg font-bold text-brand-text">
               査定ポイント
             </h2>
             <div className="whitespace-pre-line rounded-2xl bg-white p-6 text-sm leading-relaxed text-gray-700 shadow-card">
-              {result.assessmentPoint}
+              {result!.assessmentPoint}
             </div>
           </section>
         )}
-
-        {/* 途中CTA */}
-        <div className="mt-10">
-          <CTASection />
-        </div>
 
         {/* 買取までの流れ */}
         <div className="mt-10">
@@ -217,10 +212,12 @@ export default async function ResultDetailPage({
             </div>
           </section>
         )}
-      </div>
 
-      {/* 最後のCTA */}
-      <CTASection />
+        {/* CTA②：ページ最下部 */}
+        <div className="mt-10">
+          <ResultAssessmentCTA result={result!} variant="bottom" />
+        </div>
+      </div>
     </main>
   );
 }

@@ -3,6 +3,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import Hero from "@/components/Hero";
 import SearchFilter from "@/components/SearchFilter";
 import ResultGrid from "@/components/ResultGrid";
+import ResultsListCTA from "@/components/ResultsListCTA";
 import WhyUs from "@/components/WhyUs";
 import FAQ from "@/components/FAQ";
 import CTASection from "@/components/CTASection";
@@ -14,8 +15,6 @@ export default async function HomePage({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // Next.jsのsearchParamsは string | string[] | undefined なので、
-  // 文字列だけを取り出した扱いやすい型に変換する
   const normalized: ResultsSearchParams = {
     keyword: toStr(searchParams.keyword),
     condition: toStr(searchParams.condition),
@@ -36,6 +35,7 @@ export default async function HomePage({
           <SearchFilter />
         </Suspense>
         <ResultGrid results={results} searchParams={normalized} />
+        <ResultsListCTA />
       </div>
       <WhyUs />
       <FAQ />

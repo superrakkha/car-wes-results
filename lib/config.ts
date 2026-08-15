@@ -1,11 +1,9 @@
 // サイト共通の設定値
-// リンク先や電話番号はここで一元管理し、あとから変更しやすくする
-// 2026-07-20時点でメインサイト（ka-wes.com）で実際に使われているリンク・電話番号に合わせている
 export const SITE_CONFIG = {
   siteName: "カーウェス 買取実績",
   mainSiteUrl: "https://www.ka-wes.com",
-  // 無料査定フォームへのリンク（メインサイトのトップ＝査定フォームへの導線）
-  assessmentUrl: "https://ka-wes.com",
+  // 無料査定LP（haisya.ka-wes.com）への基本リンク。WEB査定系CTAはここに統一する
+  assessmentUrl: "https://haisya.ka-wes.com/",
   phone: "0120823320",
   phoneDisplay: "0120-823-320",
   lineUrl: "https://line.me/R/ti/p/@080gspcs?ts=05122306&oat_content=url",
@@ -24,9 +22,6 @@ export const SITE_CONFIG = {
   ],
   badges: ["通話無料", "現金手渡し", "24時間対応中"],
   resultsPerPage: 24,
-  // このサイト自身の公開URL（sitemap.xml・canonicalなどに使用）
-  // Vercelでの一時的なURLで運用中の場合は、環境変数 NEXT_PUBLIC_SITE_URL を設定して上書きできる
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://results.ka-wes.com",
-  // 管理画面の簡易パスワード（Supabase Auth接続までの仮のもの。必ず変更してください）
   adminPassword: "carwes2026",
 } as const;
