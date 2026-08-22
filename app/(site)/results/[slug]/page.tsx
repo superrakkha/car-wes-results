@@ -15,10 +15,9 @@ import {
   getRelatedResults,
 } from "@/lib/utils";
 
-// 車両データは管理画面からいつでも変わりうるため、
-// このページはキャッシュせず常に最新の状態で描画する
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// 車両データは管理画面からいつでも変わりうるが、毎回作り直すと遅くなるため、
+// 60秒だけキャッシュしてそこそこ速く保つ（管理画面からの変更はrevalidatePathで即反映される）
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

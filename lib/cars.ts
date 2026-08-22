@@ -117,7 +117,9 @@ async function urlExists(url: string): Promise<boolean> {
     const res = await fetch(url, {
       method: "GET",
       signal: controller.signal,
-      cache: "no-store",
+      // ページが存在するかどうかは滅多に変わらないため24時間キャッシュする。
+      // 詳細ページを開くたびに毎回cars.ka-wes.comへ問い合わせに行くと遅くなるため
+      next: { revalidate: 86400 },
       headers: {
         // 一部のサーバーはUser-Agentが無いリクエストをブロックすることがあるため付与する
         "User-Agent":
